@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View Invoices</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+body{display:flex;height:100vh;background:#f4f6f8}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:#1e293b;
+  color:#fff;
+  padding:20px
+}
+.sidebar h2{text-align:center;margin-bottom:30px}
+.sidebar a{
+  display:block;
+  padding:12px;
+  margin-bottom:10px;
+  color:white;
+  text-decoration:none;
+  border-radius:6px
+}
+.sidebar a:hover,.sidebar a.active{background:#2563eb}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column}
+
+/* HEADER */
+.header{
+  background:#fff;
+  padding:15px 25px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid #ddd
+}
+.header img{width:40px}
+
+/* CONTENT */
+.content{padding:25px;overflow:auto}
+
+/* SEARCH */
+.search-box{
+  padding:10px;
+  width:320px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  margin-bottom:15px
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #ddd;
+  text-align:left
+}
+th{background:#f1f5f9}
+tr:hover{background:#f9fafb}
+
+/* DOWNLOAD BUTTON */
+.download-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 14px;
+  background:linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:500;
+  transition:all .25s ease;
+  box-shadow:0 2px 6px rgba(37,99,235,.3)
+}
+.download-btn:hover{
+  background:linear-gradient(135deg,#1e40af,#1d4ed8);
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(37,99,235,.45)
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Dashboard</h2>
+  <a href="/dashboard-page">Dashboard</a>
+  <a href="/add-product-page">Add Products</a>
+  <a href="/create-invoice-page">Create Invoice</a>
+  <a class="active" href="#">View Invoices</a>
+</div>
+
+<div class="main">
+
+  <div class="header">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png">
+    <h1>Invoice Dashboard</h1>
+  </div>
+
+  <div class="content">
+    <h2 style="margin-bottom:10px">📄 Invoice History</h2>
+
+    <input
+      type="text"
+      id="searchBox"
+      class="search-box"
+      placeholder="🔍 Search by Invoice No / Name / Phone"
+      oninput="filterInvoices()"
+    >
+
+    <div id="invoiceContainer"></div>
+  </div>
+
+</div>
+
+<script>
+let allInvoices = [];
+
+/* FETCH INVOICES */
+fetch("/invoices")
+.then(res => res.json())
+.then(data => {
+  allInvoices = data;
+  renderTable(allInvoices);
+});
+
+/* RENDER TABLE */
+function renderTable(invoices){
+  if (!invoices.length) {
+    invoiceContainer.innerHTML = "<p>No invoices found</p>";
+    return;
+  }
+
+  let html = `
+  <table>
+    <tr>
+      <th>Invoice No</th>
+      <th>Date</th>
+      <th>Customer</th>
+      <th>Contact</th>
+      <th>State</th>
+      <th>Grand Total</th>
+      <th>Action</th>
+    </tr>`;
+
+  invoices.forEach(inv => {
+    html += `
+    <tr>
+      <td>${inv.invoice_no}</td>
+      <td>${inv.invoice_date}</td>
+      <td>${inv.customer_name}</td>
+      <td>${inv.customer_contact}</td>
+      <td>${inv.customer_state}</td>
+      <td>₹${inv.grand_total}</td>
+      <td>
+        <a class="download-btn"
+           href="/download-invoice/${inv.invoice_no}">
+           Download PDF
+        </a>
+      </td>
+    </tr>`;
+  });
+
+  html += `</table>`;
+  invoiceContainer.innerHTML = html;
+}
+
+/* SEARCH FILTER */
+function filterInvoices(){
+  const q = searchBox.value.toLowerCase();
+  renderTable(
+    allInvoices.filter(inv =>
+      inv.invoice_no.toLowerCase().includes(q) ||
+      inv.customer_name.toLowerCase().includes(q) ||
+      inv.customer_contact.toLowerCase().includes(q)
+    )
+  );
+}
+</script>
+
+</body>
+</html>

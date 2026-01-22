@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice {{ invoice.invoice_no }}</title>
+
+<style>
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 25px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 14px;
+}
+
+/* ================= HEADER ================= */
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 3px solid #2563eb;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.company h2 {
+  margin: 0;
+  color: #2563eb;
+}
+
+.company p {
+  margin: 3px 0;
+  font-size: 13px;
+}
+
+.logo {
+  text-align: center;
+}
+
+.logo img {
+  height: 55px;
+}
+
+.invoice-meta {
+  text-align: right;
+  font-size: 13px;
+}
+
+/* ================= SECTIONS ================= */
+.section {
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  background: #f1f5f9;
+  padding: 8px;
+  margin: 0 0 10px;
+  font-size: 14px;
+  border-left: 4px solid #2563eb;
+}
+
+/* CUSTOMER GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  font-size: 13px;
+}
+
+/* ================= TABLE ================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  background: #2563eb;
+  color: white;
+  padding: 10px;
+  font-size: 13px;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-size: 13px;
+}
+
+td:first-child {
+  text-align: left;
+}
+
+/* ================= SUMMARY ROW ================= */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 25px;
+  align-items: flex-start;
+}
+
+/* BANK DETAILS */
+.bank-details {
+  width: 55%;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+}
+
+.bank-details strong {
+  display: block;
+  background: #f1f5f9;
+  padding: 6px;
+  margin-bottom: 8px;
+  border-left: 4px solid #2563eb;
+}
+
+.bank-details p {
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+/* TOTALS */
+.totals {
+  width: 40%;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.totals .grand {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2563eb;
+  border-top: 2px dashed #2563eb;
+  padding-top: 10px;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  margin-top: 35px;
+  font-size: 12px;
+  color: #555;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<div class="header">
+
+  <!-- LEFT -->
+  <div class="company">
+    <h2>Jhaishna Technologies Pvt Ltd</h2>
+    <p>Vijayawada, Andhra Pradesh</p>
+    <p>Email: jhaishna@gmail.com | Phone: 55555555</p>
+  </div>
+
+  <!-- CENTER LOGO -->
+<div class="logo">
+  <img src="/static/images/logo.png" alt="Company Logo" style="height:55px;">
+
+</div>
+
+
+  <!-- RIGHT -->
+  <div class="invoice-meta">
+    <p><strong>Invoice No:</strong> {{ invoice.invoice_no }}</p>
+    <p><strong>Date:</strong> {{ invoice.invoice_date }}</p>
+  </div>
+
+</div>
+
+<!-- ================= CUSTOMER DETAILS ================= -->
+<div class="section">
+  <h3>Customer Details</h3>
+  <div class="grid">
+    <div><strong>Name:</strong> {{ invoice.customer_name }}</div>
+    <div><strong>Contact:</strong> {{ invoice.customer_contact }}</div>
+    <div><strong>State:</strong> {{ invoice.customer_state }}</div>
+    <div><strong>Address:</strong> {{ invoice.customer_address }}</div>
+  </div>
+</div>
+
+<!-- ================= PRODUCTS ================= -->
+<div class="section">
+  <h3>Products</h3>
+
+  <table>
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+      <td>{{ item.product }}</td>
+      <td>{{ item.qty }}</td>
+      <td>₹{{ item.price }}</td>
+      <td>₹{{ item.total }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- ================= BANK + TOTAL ================= -->
+<div class="summary-row">
+
+  <!-- BANK DETAILS -->
+  <div class="bank-details">
+    <strong>Bank Details</strong>
+    <p>
+      Company Name: Jhaishna Technologies Pvt Ltd<br>
+      Account No: 50200021155643<br>
+      IFSC: HDFC0000109<br>
+      Bank: HDFC Bank, Vijayawada
+    </p>
+  </div>
+
+  <!-- TOTALS -->
+  <div class="totals">
+    <div><span>Subtotal</span><span>₹{{ invoice.subtotal }}</span></div>
+    <div><span>CGST</span><span>₹{{ invoice.cgst }}</span></div>
+    <div><span>SGST</span><span>₹{{ invoice.sgst }}</span></div>
+    <div class="grand">
+      <span>Grand Total</span>
+      <span>₹{{ invoice.grand_total }}</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="footer">
+  <p><em>Thank you for your business!</em></p>
+</div>
+
+</body>
+</html>

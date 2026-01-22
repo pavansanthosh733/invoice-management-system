@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Invoice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+body{display:flex;height:100vh;background:#f4f6f8}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:#1e293b;color:#fff;padding:20px}
+.sidebar h2{text-align:center;margin-bottom:30px}
+.sidebar a{display:block;padding:12px;margin-bottom:10px;color:white;text-decoration:none;border-radius:6px}
+.sidebar a:hover,.active{background:#2563eb}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column}
+
+/* HEADER */
+.header{background:#fff;padding:15px 25px;display:flex;gap:10px;border-bottom:1px solid #ddd}
+.header img{width:40px}
+
+/* CONTENT */
+.content{padding:25px;overflow:auto}
+
+/* SECTION */
+.section{background:#fff;padding:20px;margin-bottom:20px;border-radius:10px}
+
+/* COMPANY */
+.company-box{display:flex;gap:20px;align-items:center}
+.company-logo img{width:120px}
+.company-info{line-height:1.8}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+input,textarea{
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:6px
+}
+textarea{resize:none}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border-bottom:1px solid #ddd;padding:8px;text-align:center}
+th{background:#f1f5f9}
+
+/* BUTTON */
+button{background:#2563eb;color:white;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;margin-top:10px}
+.add-btn{background:green}
+.remove-btn{background:#dc2626;padding:6px 10px}
+
+/* FOOTER */
+.invoice-footer{display:flex;gap:30px;align-items:flex-end}
+
+/* BANK */
+.bank-details{font-size:14px;line-height:1.7}
+
+/* TOTALS */
+.totals{
+  width:380px;
+  border:2px solid #2563eb;
+  border-radius:10px;
+  padding:15px;
+  background:#f8fafc;
+}
+.totals div{display:flex;justify-content:space-between;margin-top:10px}
+.totals .grand{font-size:18px;color:#2563eb;border-top:2px dashed #2563eb;padding-top:10px}
+
+/* PRODUCT SEARCH */
+.suggestions{
+  position:absolute;
+  background:white;
+  border:1px solid #ccc;
+  width:100%;
+  max-height:150px;
+  overflow:auto;
+  z-index:1000;
+  display:none;
+}
+.suggestions div{
+  padding:8px;
+  cursor:pointer;
+}
+.suggestions div:hover{
+  background:#2563eb;
+  color:white;
+}
+
+@media print{
+  .sidebar,.header,.actions,.add-btn,.remove-btn{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Dashboard</h2>
+  <a href="/dashboard-page">Dashboard</a>
+  <a href="/add-product-page">Add Products</a>
+  <a class="active" href="#">Create Invoice</a>
+  <a href="/view-invoices-page">View Invoices</a>
+</div>
+
+<div class="main">
+
+<div class="header">
+  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png">
+  <h1>Invoice Dashboard</h1>
+</div>
+
+<div class="content">
+
+<!-- COMPANY -->
+<div class="section">
+  <h3>🏢 Company Details</h3>
+  <div class="company-box">
+    <div class="company-logo">
+      <img src="/static/images/logo.png">
+    </div>
+    <div class="company-info">
+      <strong>Jhaishna Technologies Pvt Ltd</strong><br>
+      Vijayawada, Andhra Pradesh<br>
+      Phone: 55555555<br>
+      Email: jhaishna@gmail.com
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER -->
+<div class="section">
+  <h3>👤 Customer Details</h3>
+  <div class="grid">
+    <input id="custName" placeholder="Customer Name">
+    <input id="custContact" placeholder="Phone / Email">
+    <input id="custState" placeholder="Customer State">
+  </div>
+  <textarea id="custAddress" rows="3" placeholder="Customer Address" style="margin-top:15px"></textarea>
+</div>
+
+<!-- INVOICE -->
+<div class="section">
+  <h3>🧾 Invoice Info</h3>
+  <div class="grid">
+    <input id="invoiceNo" readonly>
+    <input type="date" id="invoiceDate">
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="section">
+  <h3>✍ Products</h3>
+  <table id="productTable">
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Price</th>
+      <th>GST %</th>
+      <th>Total</th>
+      <th>Action</th>
+    </tr>
+  </table>
+  <button class="add-btn" onclick="addRow()">+ Add Product</button>
+</div>
+
+<!-- FOOTER -->
+<div class="section invoice-footer">
+  <div style="flex:1">
+    <div class="bank-details">
+      <strong>Bank Details</strong><br>
+      Company Name: Jhaishna Technologies Pvt Ltd<br>
+      Account No: 50200021155643<br>
+      IFSC: HDFC0000109<br>
+      Bank: HDFC Bank, Vijayawada
+    </div>
+  </div>
+
+  <div class="totals">
+    <div><span>Subtotal</span><span id="subtotal">0</span></div>
+    <div><span>CGST</span><span id="cgst">0</span></div>
+    <div><span>SGST</span><span id="sgst">0</span></div>
+    <div class="grand"><strong>Grand Total</strong><strong id="grand">0</strong></div>
+  </div>
+</div>
+
+<div class="section actions">
+  <button onclick="saveInvoice()">💾 Save Invoice</button>
+  <button onclick="window.location.href='/download-invoice/' + invoiceNo.value">
+  📄 Download PDF
+</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+/* ✅ AUTO INVOICE NO FROM BACKEND */
+fetch("/next-invoice-no")
+  .then(res => res.json())
+  .then(data => {
+    invoiceNo.value = data.invoice_no;
+  })
+  .catch(err => {
+    console.error("Invoice no error:", err);
+    invoiceNo.value = "INV-ERROR";
+  });
+
+/* DATE */
+invoiceDate.value = new Date().toISOString().slice(0,10);
+
+/* PRODUCTS LIST */
+let products = [];
+
+fetch("/products-list")
+  .then(r => r.json())
+  .then(d => products = d);
+
+/* ADD PRODUCT ROW */
+function addRow(){
+  const r = productTable.insertRow();
+  r.innerHTML = `
+    <td style="position:relative">
+      <input type="text" oninput="searchProduct(this)" placeholder="Type product">
+      <div class="suggestions"></div>
+    </td>
+    <td><input type="number" value="1" oninput="calculateTotals()"></td>
+    <td><input readonly></td>
+    <td><input readonly></td>
+    <td class="rowTotal">0</td>
+    <td><button class="remove-btn" onclick="removeRow(this)">❌</button></td>
+  `;
+}
+
+/* PRODUCT SEARCH */
+function searchProduct(input){
+  const box = input.nextElementSibling;
+  box.innerHTML = "";
+
+  if(!input.value){
+    box.style.display = "none";
+    return;
+  }
+
+  products
+    .filter(p => p.name.toLowerCase().includes(input.value.toLowerCase()))
+    .forEach(p => {
+      const div = document.createElement("div");
+      div.innerText = p.name;
+      div.onclick = () => selectProduct(input, p);
+      box.appendChild(div);
+    });
+
+  box.style.display = "block";
+}
+
+/* SELECT PRODUCT */
+function selectProduct(input, p){
+  const row = input.closest("tr");
+  input.value = p.name;
+  row.cells[2].querySelector("input").value = p.price;
+  row.cells[3].querySelector("input").value = p.gst;
+  input.nextElementSibling.style.display = "none";
+  calculateTotals();
+}
+
+/* REMOVE ROW */
+function removeRow(btn){
+  btn.closest("tr").remove();
+  calculateTotals();
+}
+
+/* CALCULATE TOTALS */
+function calculateTotals(){
+  let sub = 0;
+
+  document.querySelectorAll("#productTable tr").forEach((r, i) => {
+    if(i === 0) return;
+
+    const q = r.cells[1].querySelector("input").value || 0;
+    const p = r.cells[2].querySelector("input").value || 0;
+    const t = q * p;
+
+    r.querySelector(".rowTotal").innerText = t.toFixed(2);
+    sub += t;
+  });
+
+  subtotal.innerText = sub.toFixed(2);
+  cgst.innerText = (sub * 0.09).toFixed(2);
+  sgst.innerText = (sub * 0.09).toFixed(2);
+  grand.innerText = (sub * 1.18).toFixed(2);
+}
+
+/* ✅ SAVE INVOICE */
+function saveInvoice(){
+  const items = [];
+
+  document.querySelectorAll("#productTable tr").forEach((r, i) => {
+    if(i === 0) return;
+
+    items.push({
+      product: r.cells[0].querySelector("input").value,
+      qty: r.cells[1].querySelector("input").value,
+      price: r.cells[2].querySelector("input").value,
+      gst: r.cells[3].querySelector("input").value,
+      total: r.querySelector(".rowTotal").innerText
+    });
+  });
+
+  fetch("/invoice", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      invoiceNo: invoiceNo.value,
+      date: invoiceDate.value,
+      customer: {
+        name: custName.value,
+        contact: custContact.value,
+        state: custState.value,
+        address: custAddress.value
+      },
+      totals: {
+        subtotal: subtotal.innerText,
+        cgst: cgst.innerText,
+        sgst: sgst.innerText,
+        igst: 0,
+        grand: grand.innerText
+      },
+      items: items
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("✅ Invoice saved to database");
+    console.log(data);
+  })
+  .catch(err => {
+    alert("❌ Error saving invoice");
+    console.error(err);
+  });
+}
+
+/* PDF DOWNLOAD */
+function downloadPDF(){
+  window.open(`/invoice-pdf/${invoiceNo.value}`, "_blank");
+}
+
+/* ADD FIRST ROW */
+addRow();
+</script>
+
+
+
+</body>
+</html>

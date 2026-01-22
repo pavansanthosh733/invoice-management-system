@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+body{display:flex;height:100vh;background:#f4f6f8}
+.sidebar{width:240px;background:#1e293b;color:#fff;padding:20px}
+.sidebar h2{text-align:center;margin-bottom:30px}
+.sidebar a{display:block;padding:12px;margin-bottom:10px;color:white;text-decoration:none;border-radius:6px}
+.sidebar a:hover,.active{background:#2563eb}
+.main{flex:1;display:flex;flex-direction:column}
+.header{background:#fff;padding:15px 25px;display:flex;gap:10px;border-bottom:1px solid #ddd}
+.header img{width:40px}
+.content{padding:25px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.card{background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
+.card h3{font-size:14px;color:#6b7280}
+.card p{font-size:24px;font-weight:bold;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Dashboard</h2>
+  <a class="active" href="/dashboard-page">Dashboard</a>
+  <a href="/add-product-page">Add Products</a>
+  <a href="/create-invoice-page">Create Invoice</a>
+  <a href="/view-invoices-page">View Invoices</a>
+</div>
+
+<div class="main">
+  <div class="header">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png">
+    <h1>Invoice Dashboard</h1>
+  </div>
+
+  <div class="content">
+    <div class="cards">
+      <div class="card"><h3>Sales Amount</h3><p id="sales"></p></div>
+      <div class="card"><h3>Total Invoices</h3><p id="invoices"></p></div>
+      <div class="card"><h3>Total Customers</h3><p id="customers"></p></div>
+      <div class="card"><h3>Total Products</h3><p id="products"></p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+fetch("/dashboard")
+.then(r=>r.json())
+.then(d=>{
+  sales.innerText="₹"+d.sales;
+  invoices.innerText=d.invoices;
+  customers.innerText=d.customers;
+  products.innerText=d.products;
+});
+</script>
+
+</body>
+</html>

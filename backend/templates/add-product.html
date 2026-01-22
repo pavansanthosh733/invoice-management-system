@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Products</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI;
+}
+
+/* ================= BODY ================= */
+body{
+  height:100vh;
+  overflow:hidden;
+  background:#f4f6f8;
+  display:flex;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  width:240px;
+  background:#1e293b;
+  color:#fff;
+  padding:20px;
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+}
+
+.sidebar h2{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.sidebar a{
+  display:block;
+  padding:12px;
+  margin-bottom:10px;
+  color:#fff;
+  text-decoration:none;
+  border-radius:6px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+  background:#2563eb;
+}
+
+/* ================= MAIN ================= */
+.main{
+  margin-left:240px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* ================= HEADER ================= */
+.header{
+  background:#fff;
+  padding:15px 25px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid #ddd;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.header img{
+  width:40px;
+}
+
+/* ================= CONTENT ================= */
+.content{
+  padding:25px;
+  overflow-y:auto;
+  flex:1;
+}
+
+/* ================= FORM ================= */
+.form-box{
+  background:#fff;
+  padding:24px;
+  border-radius:12px;
+  max-width:420px;
+  margin-bottom:30px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
+}
+
+.form-box h3{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:16px;
+}
+
+.form-row{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:14px;
+}
+
+.form-row label{
+  font-size:13px;
+  font-weight:600;
+  color:#374151;
+  margin-bottom:6px;
+}
+
+.form-row input{
+  padding:10px 12px;
+  border:1px solid #d1d5db;
+  border-radius:6px;
+  font-size:14px;
+}
+
+.form-row input:focus{
+  outline:none;
+  border-color:#2563eb;
+}
+
+button{
+  background:#2563eb;
+  color:#fff;
+  padding:10px 18px;
+  border:none;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1e40af;
+}
+
+/* ================= TABLE ================= */
+.table-wrapper{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  overflow:hidden;
+}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:14px;
+}
+
+thead th{
+  background:#f8fafc;
+  font-size:12px;
+  font-weight:600;
+  color:#374151;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  padding:14px 16px;
+  border-bottom:2px solid #e5e7eb;
+}
+
+tbody td{
+  padding:14px 16px;
+  border-bottom:1px solid #e5e7eb;
+}
+
+tbody tr:nth-child(even){
+  background:#f9fafb;
+}
+
+tbody tr:hover{
+  background:#eef2ff;
+}
+
+/* ALIGN */
+td.price, td.gst{
+  text-align:right;
+}
+
+td.actions{
+  text-align:center;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.action-btn{
+  padding:6px 12px;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:500;
+  border:none;
+  cursor:pointer;
+  margin-right:6px;
+}
+
+/* EDIT */
+.btn-edit{
+  background:#f59e0b;
+  color:#fff;
+}
+.btn-edit:hover{
+  background:#d97706;
+}
+
+/* DELETE */
+.btn-delete{
+  background:#dc2626;
+  color:#fff;
+}
+.btn-delete:hover{
+  background:#b91c1c;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
+  <h2>Dashboard</h2>
+  <a href="/dashboard-page">Dashboard</a>
+  <a class="active" href="#">Add Products</a>
+  <a href="/create-invoice-page">Create Invoice</a>
+  <a href="/view-invoices-page">View Invoices</a>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div class="main">
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png">
+    <h1>Invoice Dashboard</h1>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ADD PRODUCT -->
+    <div class="form-box">
+      <h3>Add / Edit Product</h3>
+
+      <div class="form-row">
+        <label>Product Name</label>
+        <input id="pname" placeholder="Enter product name">
+      </div>
+
+      <div class="form-row">
+        <label>Price (₹)</label>
+        <input id="pprice" type="number" placeholder="Enter price">
+      </div>
+
+      <div class="form-row">
+        <label>GST %</label>
+        <input id="pgst" type="number" placeholder="Enter GST">
+      </div>
+
+      <button onclick="addProduct()">Save Product</button>
+    </div>
+
+    <!-- PRODUCT TABLE -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th style="text-align:right;">Price (₹)</th>
+            <th style="text-align:right;">GST %</th>
+            <th style="text-align:center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let editProductId = null;
+
+/* LOAD PRODUCTS */
+function loadProducts(){
+  fetch("/products")
+    .then(r => r.json())
+    .then(data => {
+      productTable.innerHTML = "";
+      data.forEach(p => {
+        productTable.innerHTML += `
+        <tr>
+          <td>${p.name}</td>
+          <td class="price">₹${p.price}</td>
+          <td class="gst">${p.gst}%</td>
+          <td class="actions">
+            <button class="action-btn btn-edit"
+              onclick="editProduct(${p.id}, '${p.name}', ${p.price}, ${p.gst})">
+              Edit
+            </button>
+            <button class="action-btn btn-delete"
+              onclick="deleteProduct(${p.id})">
+              Delete
+            </button>
+          </td>
+        </tr>`;
+      });
+    });
+}
+
+/* ADD / UPDATE PRODUCT */
+function addProduct(){
+  const payload = {
+    name: pname.value,
+    price: pprice.value,
+    gst: pgst.value
+  };
+
+  const method = editProductId ? "PUT" : "POST";
+  const url = editProductId ? `/products/${editProductId}` : "/products";
+
+  fetch(url, {
+    method: method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    pname.value = pprice.value = pgst.value = "";
+    editProductId = null;
+    loadProducts();
+  });
+}
+
+/* EDIT */
+function editProduct(id, name, price, gst){
+  editProductId = id;
+  pname.value = name;
+  pprice.value = price;
+  pgst.value = gst;
+}
+
+/* DELETE */
+function deleteProduct(id){
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  fetch(`/products/${id}`, { method: "DELETE" })
+    .then(() => loadProducts());
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>
